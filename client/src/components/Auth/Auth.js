@@ -104,8 +104,8 @@ const Auth = () => {
                   half
                 ></Input>
                 <Input
-                  name="secondName"
-                  label="Second Name"
+                  name="lastName"
+                  label="Last Name"
                   handleChange={handleChange}
                   half
                 ></Input>
