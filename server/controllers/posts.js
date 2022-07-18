@@ -17,7 +17,7 @@ export const createPost = async (req, res) => {
   try {
     const post = req.body;
 
-    const newPost = await postModel.create(post);
+    const newPost = await postModel.create({ ...post, creator: req.userId });
 
     res.status(201).json(newPost);
   } catch (error) {
