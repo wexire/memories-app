@@ -3,9 +3,25 @@ import postModel from "../models/post.js";
 
 export const getPosts = async (req, res) => {
   try {
-    const posts = await postModel.find();
+    const { page } = req.query;
 
-    res.status(200).json(posts);
+    const limit = 8;
+    const startIndex = (Number(page) - 1) * limit;
+    const total = await postModel.countDocuments;
+
+    const posts = await postModel
+      .find()
+      .sort({ _id: -1 })
+      .limit(limit)
+      .skip(startIndex);
+
+    res
+      .status(200)
+      .json({
+        data: posts,
+        currentPage: Number(page),
+        totalPages: Math.ceil(total / limit),
+      });
   } catch (error) {
     res.status(404).json({
       message: error.message,
