@@ -15,24 +15,22 @@ export default makeStyles((theme) => ({
     },
   },
   heading: {
-    color: "rgba(0,183,255, 1)",
+    color: theme.palette.primary.main,
     textDecoration: "none",
+    fontSize: "2em",
+    fontWeight: 300,
   },
   image: {
-    marginLeft: "15px",
+    marginLeft: "10px",
+    marginTop: "5px",
   },
-  brandContainer: {
+  toolbar: {
     display: "flex",
-    alignItems: "center",
-  },
-  purple: {
-    color: theme.palette.getContrastText(deepPurple[500]),
-    backgroundColor: deepPurple[500],
-  },
-  userName: {
-    display: "flex",
-    justifyContent: "center",
-    textAlign: "center",
+    justifyContent: "flex-end",
+    width: "400px",
+    [theme.breakpoints.down("sm")]: {
+      width: "auto",
+    },
   },
   profile: {
     display: "flex",
@@ -48,12 +46,17 @@ export default makeStyles((theme) => ({
   logout: {
     marginLeft: "20px",
   },
-  toolbar: {
+  userName: {
     display: "flex",
-    justifyContent: "flex-end",
-    width: "400px",
-    [theme.breakpoints.down("sm")]: {
-      width: "auto",
-    },
+    alignItems: "center",
+    textAlign: "center",
+  },
+  brandContainer: {
+    display: "flex",
+    alignItems: "center",
+  },
+  purple: {
+    color: theme.palette.getContrastText(deepPurple[500]),
+    backgroundColor: deepPurple[500],
   },
 }));
