@@ -5,9 +5,22 @@ import {
   END_LOADING,
   FETCH_ALL,
   FETCH_BY_SEARCH,
+  FETCH_POST,
   START_LOADING,
   UPDATE,
 } from "../constants/actionTypes";
+
+export const getPost = (id) => async (dispatch) => {
+  try {
+    dispatch({ type: START_LOADING });
+    const { data } = await api.fetchPost(id);
+
+    dispatch({ type: FETCH_POST, payload: data });
+    dispatch({ type: END_LOADING });
+  } catch (error) {
+    console.log(error.message);
+  }
+};
 
 export const getPosts = (page) => async (dispatch) => {
   try {
@@ -35,10 +48,12 @@ export const getPostsBySearch = (searchQuery) => async (dispatch) => {
   }
 };
 
-export const createPost = (post) => async (dispatch) => {
+export const createPost = (post, history) => async (dispatch) => {
   try {
     dispatch({ type: START_LOADING });
     const { data } = await api.createPost(post);
+
+    history.push(`/posts/${post._id}`);
 
     dispatch({ type: CREATE, payload: data });
     dispatch({ type: END_LOADING });

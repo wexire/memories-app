@@ -7,7 +7,7 @@ export const getPosts = async (req, res) => {
 
     const limit = 8;
     const startIndex = (Number(page) - 1) * limit;
-    const total = await postModel.countDocuments;
+    const total = await postModel.countDocuments({});
 
     const posts = await postModel
       .find()
@@ -15,17 +15,27 @@ export const getPosts = async (req, res) => {
       .limit(limit)
       .skip(startIndex);
 
-    res
-      .status(200)
-      .json({
-        data: posts,
-        currentPage: Number(page),
-        totalPages: Math.ceil(total / limit),
-      });
+    res.status(200).json({
+      data: posts,
+      currentPage: Number(page),
+      totalPages: Math.ceil(total / limit),
+    });
   } catch (error) {
     res.status(404).json({
       message: error.message,
     });
+  }
+};
+
+export const getPost = async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    const post = await postModel.findById(id);
+
+    res.status(200).json(post);
+  } catch (error) {
+    res.status(404).json({ message: error.message });
   }
 };
 

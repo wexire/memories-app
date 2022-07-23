@@ -10,7 +10,8 @@ const Posts = ({ setCurrentId }) => {
 
   const { posts, isLoading } = useSelector((state) => state.posts);
 
-  if (!posts.length && !isLoading) return "No posts";
+  if (!posts.length && !isLoading)
+    return <Typography variant="h4">No posts found...</Typography>;
 
   return isLoading ? (
     <Grid container justifyContent="center">
