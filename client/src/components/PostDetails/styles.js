@@ -38,9 +38,4 @@ export default makeStyles((theme) => ({
     borderRadius: "15px",
     height: "39vh",
   },
-  paper: {
-    cursor: "pointer",
-    borderRadius: 0,
-    padding: "20px",
-  },
 }));

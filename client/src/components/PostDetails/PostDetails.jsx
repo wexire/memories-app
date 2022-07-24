@@ -9,15 +9,15 @@ import moment from "moment";
 import React from "react";
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { useHistory, useParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import { getPost, getPostsBySearch } from "../../actions/posts";
+import RecommendedPost from "./RecommendedPost/RecommendedPost";
 
 import useStyles from "./styles";
 
 const PostDetails = () => {
   const classes = useStyles();
   const dispatch = useDispatch();
-  const history = useHistory();
 
   const { post, posts, isLoading } = useSelector((state) => state.posts);
   const { id } = useParams();
@@ -45,10 +45,6 @@ const PostDetails = () => {
   }
 
   const recommendedPosts = posts.filter((id) => id !== post._id);
-
-  const openPost = (id) => {
-    history.push(`/posts/${id}`);
-  };
 
   return (
     <Paper style={{ padding: "20px", borderRadius: "15px" }} elevation={6}>
@@ -93,35 +89,9 @@ const PostDetails = () => {
           </Typography>
           <Divider style={{ margin: "20px 0" }} />
           <Grid container className={classes.recommendedPosts} spacing={3}>
-            {recommendedPosts.map(
-              ({ title, name, message, likes, selectedFile, _id }) => (
-                <Grid item xs={12} sm={6} md={3} key={_id}>
-                  <Paper
-                    elevation={3}
-                    className={classes.paper}
-                    onClick={() => openPost(_id)}
-                  >
-                    <Typography gutterBottom variant="h5">
-                      {title}
-                    </Typography>
-                    <Typography gutterBottom variant="body1">
-                      {name}
-                    </Typography>
-                    <Typography
-                      gutterBottom
-                      variant="body2"
-                      color="textSecondary"
-                    >
-                      {message.split(" ").splice(0, 20).join(" ")}...
-                    </Typography>
-                    <Typography gutterBottom variant="subtitle1">
-                      Likes: {likes.length}
-                    </Typography>
-                    <img src={selectedFile} width="100%" />
-                  </Paper>
-                </Grid>
-              )
-            )}
+            {recommendedPosts.map((post) => (
+              <RecommendedPost post={post}></RecommendedPost>
+            ))}
           </Grid>
         </div>
       )}
