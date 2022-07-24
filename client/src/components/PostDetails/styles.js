@@ -28,9 +28,7 @@ export default makeStyles((theme) => ({
   },
   recommendedPosts: {
     display: "flex",
-    [theme.breakpoints.down("sm")]: {
-      flexDirection: "column",
-    },
+    alignItems: "stretch",
   },
   loadingPaper: {
     display: "flex",
@@ -39,5 +37,10 @@ export default makeStyles((theme) => ({
     padding: "20px",
     borderRadius: "15px",
     height: "39vh",
+  },
+  paper: {
+    cursor: "pointer",
+    borderRadius: 0,
+    padding: "20px",
   },
 }));

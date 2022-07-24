@@ -1,6 +1,7 @@
 import {
   CircularProgress,
   Divider,
+  Grid,
   Paper,
   Typography,
 } from "@material-ui/core";
@@ -90,36 +91,38 @@ const PostDetails = () => {
           <Typography gutterBottom variant="h5">
             You might also like:
           </Typography>
-          <Divider />
-          <div className={classes.recommendedPosts}>
+          <Divider style={{ margin: "20px 0" }} />
+          <Grid container className={classes.recommendedPosts} spacing={3}>
             {recommendedPosts.map(
               ({ title, name, message, likes, selectedFile, _id }) => (
-                <div
-                  style={{ margin: "20px", cursor: "pointer" }}
-                  onClick={() => openPost(_id)}
-                  key={_id}
-                >
-                  <Typography gutterBottom variant="h5">
-                    {title}
-                  </Typography>
-                  <Typography gutterBottom variant="body1">
-                    {name}
-                  </Typography>
-                  <Typography
-                    gutterBottom
-                    variant="body2"
-                    color="textSecondary"
+                <Grid item xs={12} sm={6} md={3} key={_id}>
+                  <Paper
+                    elevation={3}
+                    className={classes.paper}
+                    onClick={() => openPost(_id)}
                   >
-                    {message.split(" ").splice(0, 20).join(" ")}...
-                  </Typography>
-                  <Typography gutterBottom variant="subtitle1">
-                    Likes: {likes.length}
-                  </Typography>
-                  <img src={selectedFile} width="200px" />
-                </div>
+                    <Typography gutterBottom variant="h5">
+                      {title}
+                    </Typography>
+                    <Typography gutterBottom variant="body1">
+                      {name}
+                    </Typography>
+                    <Typography
+                      gutterBottom
+                      variant="body2"
+                      color="textSecondary"
+                    >
+                      {message.split(" ").splice(0, 20).join(" ")}...
+                    </Typography>
+                    <Typography gutterBottom variant="subtitle1">
+                      Likes: {likes.length}
+                    </Typography>
+                    <img src={selectedFile} width="100%" />
+                  </Paper>
+                </Grid>
               )
             )}
-          </div>
+          </Grid>
         </div>
       )}
     </Paper>
