@@ -11,6 +11,7 @@ import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
 import { getPost, getPostsBySearch } from "../../actions/posts";
+import { RESET_POST } from "../../constants/actionTypes";
 import RecommendedPost from "./RecommendedPost/RecommendedPost";
 
 import useStyles from "./styles";
@@ -23,6 +24,7 @@ const PostDetails = () => {
   const { id } = useParams();
 
   useEffect(() => {
+    dispatch({ type: RESET_POST });
     dispatch(getPost(id));
   }, [id]);
 
@@ -44,7 +46,9 @@ const PostDetails = () => {
     );
   }
 
-  const recommendedPosts = posts.filter((id) => id !== post._id);
+  const recommendedPosts = posts
+    .filter(({ _id }) => _id !== post._id)
+    .slice(0, 4);
 
   return (
     <Paper style={{ padding: "20px", borderRadius: "15px" }} elevation={6}>
@@ -90,7 +94,9 @@ const PostDetails = () => {
           <Divider style={{ margin: "20px 0" }} />
           <Grid container className={classes.recommendedPosts} spacing={3}>
             {recommendedPosts.map((post) => (
-              <RecommendedPost post={post}></RecommendedPost>
+              <Grid item xs={12} sm={6} md={3} key={post._id}>
+                <RecommendedPost post={post}></RecommendedPost>
+              </Grid>
             ))}
           </Grid>
         </div>

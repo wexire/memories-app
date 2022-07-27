@@ -1,18 +1,37 @@
 import { Button, Paper, TextField, Typography } from "@material-ui/core";
-import React, { useEffect, useState } from "react";
+import ChipInput from "material-ui-chip-input";
+import React, { useEffect } from "react";
 import FileBase from "react-file-base64";
 import { useDispatch, useSelector } from "react-redux";
 import { useHistory } from "react-router-dom";
 import { createPost, updatePost } from "../../actions/posts";
-
+import { useFormik } from "formik";
+import * as Yup from "yup";
 import useStyles from "./styles";
 
 const Form = ({ currentId, setCurrentId }) => {
-  const [postData, setPostData] = useState({
-    title: "",
-    message: "",
-    tags: "",
-    selectedFile: "",
+  const formik = useFormik({
+    initialValues: {
+      title: "",
+      message: "",
+      tags: [],
+      selectedFile: "",
+    },
+    validationSchema: Yup.object({
+      title: Yup.string().required("The memory title is required."),
+      tags: Yup.array().min(1, "The memory should have at least one tag."),
+      selectedFile: Yup.string().required("The memory should have an image."),
+    }),
+    onSubmit: (values) => {
+      if (currentId) {
+        dispatch(
+          updatePost(currentId, { ...values, name: user?.result?.name })
+        );
+      } else {
+        dispatch(createPost({ ...values, name: user?.result?.name }, history));
+      }
+      clear();
+    },
   });
   const classes = useStyles();
   const dispatch = useDispatch();
@@ -25,32 +44,23 @@ const Form = ({ currentId, setCurrentId }) => {
 
   useEffect(() => {
     if (post) {
-      setPostData(post);
+      formik.setValues(post);
     }
   }, [post]);
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-
-    if (currentId) {
-      dispatch(
-        updatePost(currentId, { ...postData, name: user?.result?.name })
-      );
-    } else {
-      dispatch(createPost({ ...postData, name: user?.result?.name }, history));
-    }
-    clear();
-  };
-
   const clear = () => {
     setCurrentId(null);
-    setPostData({
-      title: "",
-      message: "",
-      tags: "",
-      selectedFile: "",
-    });
+    formik.resetForm();
   };
+
+  const handleAdd = (tag) =>
+    formik.setValues({ ...formik.values, tags: [...formik.values.tags, tag] });
+
+  const handleDelete = (tagToDelete) =>
+    formik.setValues({
+      ...formik.values,
+      tags: formik.values.tags.filter((tag) => tag !== tagToDelete),
+    });
 
   if (!user) {
     return (
@@ -68,7 +78,8 @@ const Form = ({ currentId, setCurrentId }) => {
         autoComplete="off"
         noValidate
         className={`${classes.form} ${classes.root}`}
-        onSubmit={handleSubmit}
+        onSubmit={formik.handleSubmit}
+        onKeyDown={(e) => e.key === "Enter" && e.preventDefault()}
       >
         <Typography variant="h6">
           {currentId ? "Editing" : "Creating"} a memory
@@ -78,9 +89,15 @@ const Form = ({ currentId, setCurrentId }) => {
           variant="outlined"
           label="Title"
           fullWidth
-          value={postData.title}
-          onChange={(e) => setPostData({ ...postData, title: e.target.value })}
+          onBlur={formik.handleBlur}
+          value={formik.values.title}
+          onChange={formik.handleChange}
         ></TextField>
+        {formik.touched.title && formik.errors.title && (
+          <Typography className={classes.error}>
+            {formik.errors.title}
+          </Typography>
+        )}
         <TextField
           name="message"
           multiline
@@ -88,29 +105,37 @@ const Form = ({ currentId, setCurrentId }) => {
           label="Message"
           fullWidth
           minRows={4}
-          value={postData.message}
-          onChange={(e) =>
-            setPostData({ ...postData, message: e.target.value })
-          }
+          value={formik.values.message}
+          onChange={formik.handleChange}
         ></TextField>
-        <TextField
-          name="tags"
-          variant="outlined"
+        <ChipInput
+          value={formik.values.tags}
+          onBlur={formik.handleBlur}
+          onAdd={handleAdd}
+          onDelete={handleDelete}
           label="Tags"
-          fullWidth
-          value={postData.tags}
-          onChange={(e) =>
-            setPostData({ ...postData, tags: e.target.value.split(",") })
-          }
-        ></TextField>
+          variant="outlined"
+          className={classes.tagsInput}
+        ></ChipInput>
+        {formik.touched.tags && formik.errors.tags && (
+          <Typography className={classes.error}>
+            {formik.errors.tags}
+          </Typography>
+        )}
         <div className={classes.fileInput}>
           <FileBase
             type="file"
+            onBlur={formik.handleBlur}
             multiple={false}
             onDone={({ base64 }) =>
-              setPostData({ ...postData, selectedFile: base64 })
+              formik.setValues({ ...formik.values, selectedFile: base64 })
             }
           ></FileBase>
+          {formik.touched.selectedFile && formik.errors.selectedFile && (
+            <Typography className={classes.error}>
+              {formik.errors.selectedFile}
+            </Typography>
+          )}
         </div>
         <Button
           className={classes.buttonSubmit}

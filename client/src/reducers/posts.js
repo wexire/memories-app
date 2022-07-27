@@ -5,6 +5,7 @@ import {
   FETCH_ALL,
   FETCH_BY_SEARCH,
   FETCH_POST,
+  RESET_POST,
   START_LOADING,
   UPDATE,
 } from "../constants/actionTypes";
@@ -39,6 +40,11 @@ export default (state = { isLoading: true, posts: [] }, action) => {
       return {
         ...state,
         posts: state.posts.filter((post) => post._id !== action.payload),
+      };
+    case RESET_POST:
+      return {
+        ...state,
+        post: null,
       };
     default:
       return state;

@@ -60,30 +60,30 @@ const Post = ({ post, setCurrentId }) => {
 
   return (
     <Card className={classes.card} raised elevation={6}>
-      <ButtonBase onClick={openPost} className={classes.cardAction}>
-        <CardMedia
-          className={classes.media}
-          image={post.selectedFile}
-          title={post.title}
-        ></CardMedia>
-        <div className={classes.overlay}>
-          <Typography variant="h6">{post.name}</Typography>
-          <Typography variant="body2">
-            {moment(post.createdAt).fromNow()}
-          </Typography>
+      <CardMedia
+        className={classes.media}
+        image={post.selectedFile}
+        title={post.title}
+      ></CardMedia>
+      <div className={classes.overlay}>
+        <Typography variant="h6">{post.name}</Typography>
+        <Typography variant="body2">
+          {moment(post.createdAt).fromNow()}
+        </Typography>
+      </div>
+      {(user?.result?.googleId === post.creator ||
+        user?.result?._id === post.creator) && (
+        <div className={classes.overlay2}>
+          <Button
+            style={{ color: "white" }}
+            size="small"
+            onClick={() => setCurrentId(post._id)}
+          >
+            <MoreHorizIcon fontSize="medium"></MoreHorizIcon>
+          </Button>
         </div>
-        {(user?.result?.googleId === post.creator ||
-          user?.result?._id === post.creator) && (
-          <div className={classes.overlay2}>
-            <Button
-              style={{ color: "white" }}
-              size="small"
-              onClick={() => setCurrentId(post._id)}
-            >
-              <MoreHorizIcon fontSize="medium"></MoreHorizIcon>
-            </Button>
-          </div>
-        )}
+      )}
+      <ButtonBase onClick={openPost} className={classes.cardAction}>
         <div className={classes.details}>
           <Typography variant="body2" color="textSecondary">
             {post.tags.map((tag) => `#${tag} `)}
@@ -94,7 +94,9 @@ const Post = ({ post, setCurrentId }) => {
         </Typography>
         <CardContent>
           <Typography variant="body1" color="textSecondary" component="p">
-            {post.message.split(" ").splice(0, 20).join(" ")}...
+            {post.message.split(" ").length > 20
+              ? `${post.message.split(" ").splice(0, 20).join(" ")}...`
+              : post.message}
           </Typography>
         </CardContent>
       </ButtonBase>

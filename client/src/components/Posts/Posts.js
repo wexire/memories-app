@@ -15,7 +15,7 @@ const Posts = ({ setCurrentId }) => {
 
   return isLoading ? (
     <Grid container justifyContent="center">
-      <CircularProgress></CircularProgress>
+      <CircularProgress size="4em"></CircularProgress>
     </Grid>
   ) : (
     <Grid container className={classes.mainContainer} spacing={2}>
