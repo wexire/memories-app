@@ -27,4 +27,8 @@ export default makeStyles((theme) => ({
   googleButton: {
     marginBottom: theme.spacing(2),
   },
+  error: {
+    color: "red",
+    margin: "0 10px",
+  },
 }));

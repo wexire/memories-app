@@ -94,7 +94,7 @@ const Form = ({ currentId, setCurrentId }) => {
           onChange={formik.handleChange}
         ></TextField>
         {formik.touched.title && formik.errors.title && (
-          <Typography className={classes.error}>
+          <Typography className={classes.error} variant="body1">
             {formik.errors.title}
           </Typography>
         )}
@@ -118,7 +118,7 @@ const Form = ({ currentId, setCurrentId }) => {
           className={classes.tagsInput}
         ></ChipInput>
         {formik.touched.tags && formik.errors.tags && (
-          <Typography className={classes.error}>
+          <Typography className={classes.error} variant="body1">
             {formik.errors.tags}
           </Typography>
         )}
@@ -132,7 +132,7 @@ const Form = ({ currentId, setCurrentId }) => {
             }
           ></FileBase>
           {formik.touched.selectedFile && formik.errors.selectedFile && (
-            <Typography className={classes.error}>
+            <Typography className={classes.error} variant="body1">
               {formik.errors.selectedFile}
             </Typography>
           )}

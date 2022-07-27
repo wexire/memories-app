@@ -23,7 +23,6 @@ export default makeStyles((theme) => ({
   },
   error: {
     color: "red",
-    fontVariant: "body2",
     width: "95%",
   },
   tagsInput: {

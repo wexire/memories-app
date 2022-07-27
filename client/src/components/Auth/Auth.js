@@ -18,22 +18,66 @@ import useStyles from "./styles";
 import { useDispatch } from "react-redux";
 import { AUTH } from "../../constants/actionTypes";
 import { signin, signup } from "../../actions/auth";
-
-const initialState = {
-  firstName: "",
-  lastName: "",
-  email: "",
-  password: "",
-  confirmPassword: "",
-};
+import { useFormik } from "formik";
+import * as Yup from "yup";
 
 const Auth = () => {
   const classes = useStyles();
-  const [formData, setFormData] = useState(initialState);
   const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [isSignUp, setSignUp] = useState(false);
   const dispatch = useDispatch();
   const history = useHistory();
+
+  const formik = useFormik({
+    initialValues: {
+      firstName: "",
+      lastName: "",
+      email: "",
+      password: "",
+      confirmPassword: "",
+    },
+    onSubmit: (values) => {
+      if (isSignUp) {
+        dispatch(signup(values, history));
+      } else {
+        dispatch(signin(values, history));
+      }
+    },
+    validationSchema: Yup.object({
+      firstName:
+        isSignUp &&
+        Yup.string()
+          .required("First name is required.")
+          .max(15, "First name should be shorter than 16 character.")
+          .min(2, "First name should be at least 2 charaters long.")
+          .matches(
+            /^([^0-9]*)$/,
+            "No numbers should be present in first name."
+          ),
+      lastName:
+        isSignUp &&
+        Yup.string()
+          .required("Second name is required.")
+          .max(30, "Second name should be shorter than 31 character.")
+          .min(2, "Second name should be at least 2 charaters long.")
+          .matches(
+            /^([^0-9]*)$/,
+            "No numbers should be present in second name."
+          ),
+      email: Yup.string()
+        .required("Email is required.")
+        .email("Not a valid email."),
+      password: Yup.string()
+        .required("Password is required.")
+        .min(8, "Password should be at least 8 characters long."),
+      confirmPassword:
+        isSignUp &&
+        Yup.string()
+          .required("Confirm password is required.")
+          .equals([Yup.ref("password")], "Passwords must match"),
+    }),
+  });
 
   const GOOGLE_CLIENT_ID =
     "730094389483-evt51f50tcska78av7krhq65vjil68tn.apps.googleusercontent.com";
@@ -49,25 +93,12 @@ const Auth = () => {
     gapi.load("client:auth2", start);
   }, []);
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-
-    if (isSignUp) {
-      dispatch(signup(formData, history));
-    } else {
-      dispatch(signin(formData, history));
-    }
-  };
-  const handleChange = (e) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
-  };
-
-  const handleShowPassword = () => {
-    setShowPassword((prevShowPassword) => !prevShowPassword);
-  };
   const switchMode = () => {
     setSignUp((prevIsSignUp) => !prevIsSignUp);
     setShowPassword(false);
+    setShowConfirmPassword(false);
+    formik.setErrors({});
+    formik.setTouched({});
   };
   const googleSuccess = async (res) => {
     const result = res?.profileObj;
@@ -92,45 +123,85 @@ const Auth = () => {
           <LockOutlinedIcon></LockOutlinedIcon>
         </Avatar>
         <Typography variant="h5">{isSignUp ? "Sign up" : "Sign in"}</Typography>
-        <form className={classes.form} onSubmit={handleSubmit}>
+        <form className={classes.form} onSubmit={formik.handleSubmit}>
           <Grid container spacing={2}>
             {isSignUp && (
               <>
                 <Input
                   name="firstName"
-                  autoFocus
                   label="First Name"
-                  handleChange={handleChange}
+                  value={formik.values.firstName}
+                  handleChange={formik.handleChange}
+                  onBlur={formik.handleBlur}
                   half
                 ></Input>
                 <Input
                   name="lastName"
                   label="Last Name"
-                  handleChange={handleChange}
+                  value={formik.values.lastName}
+                  handleChange={formik.handleChange}
+                  onBlur={formik.handleBlur}
                   half
                 ></Input>
+                {formik.touched.firstName && formik.errors.firstName && (
+                  <Typography variant="body1" className={classes.error}>
+                    {formik.errors.firstName}
+                  </Typography>
+                )}
+                {formik.touched.lastName && formik.errors.lastName && (
+                  <Typography variant="body1" className={classes.error}>
+                    {formik.errors.lastName}
+                  </Typography>
+                )}
               </>
             )}
             <Input
               name="email"
               label="Email Address"
-              handleChange={handleChange}
+              value={formik.values.email}
+              handleChange={formik.handleChange}
+              onBlur={formik.handleBlur}
               type="email"
             ></Input>
+            {formik.touched.email && formik.errors.email && (
+              <Typography variant="body1" className={classes.error}>
+                {formik.errors.email}
+              </Typography>
+            )}
             <Input
               name="password"
               label="Password"
-              handleChange={handleChange}
+              value={formik.values.password}
+              handleChange={formik.handleChange}
+              onBlur={formik.handleBlur}
               type={showPassword ? "text" : "password"}
-              handleShowPassword={handleShowPassword}
+              handleShowPassword={() => setShowPassword(!showPassword)}
             ></Input>
+            {formik.touched.password && formik.errors.password && (
+              <Typography variant="body1" className={classes.error}>
+                {formik.errors.password}
+              </Typography>
+            )}
             {isSignUp && (
-              <Input
-                name="confirmPassword"
-                label="Repeat Password"
-                handleChange={handleChange}
-                type="password"
-              ></Input>
+              <>
+                <Input
+                  name="confirmPassword"
+                  label="Confirm Password"
+                  value={formik.values.confirmPassword}
+                  handleChange={formik.handleChange}
+                  onBlur={formik.handleBlur}
+                  type={showConfirmPassword ? "text" : "password"}
+                  handleShowPassword={() =>
+                    setShowConfirmPassword(!showConfirmPassword)
+                  }
+                ></Input>
+                {formik.touched.confirmPassword &&
+                  formik.errors.confirmPassword && (
+                    <Typography variant="body1" className={classes.error}>
+                      {formik.errors.confirmPassword}
+                    </Typography>
+                  )}
+              </>
             )}
           </Grid>
 

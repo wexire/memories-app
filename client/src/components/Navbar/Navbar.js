@@ -55,7 +55,10 @@ const Navbar = () => {
               alt={user?.result.name}
               src={user?.result.imageUrl}
             >
-              {user?.result.name.charAt(0)}
+              {user?.result.name
+                .split(" ")
+                .map((name) => name.charAt(0))
+                .join("")}
             </Avatar>
             <Typography className={classes.userName} variant="h6">
               {user?.result.name}

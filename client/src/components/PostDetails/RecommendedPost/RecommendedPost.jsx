@@ -24,7 +24,9 @@ const RecommendedPost = ({ post }) => {
         {post.name}
       </Typography>
       <Typography gutterBottom variant="body2" color="textSecondary">
-        {post.message.split(" ").splice(0, 20).join(" ")}...
+        {post.message.split(" ").length > 20
+          ? `${post.message.split(" ").splice(0, 20).join(" ")}...`
+          : post.message}
       </Typography>
       <img src={post.selectedFile} width="100%" />
       <Typography gutterBottom variant="subtitle1">

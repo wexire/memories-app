@@ -9,7 +9,7 @@ export default makeStyles((theme) => ({
   },
   pagination: {
     borderRadius: 4,
-    marginTop: "1rem",
+    margin: "1rem 0",
     padding: "16px",
   },
   gridContainer: {

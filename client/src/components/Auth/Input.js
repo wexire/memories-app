@@ -9,8 +9,9 @@ const Input = ({
   handleChange,
   label,
   type,
-  autoFocus,
   handleShowPassword,
+  value,
+  onBlur,
 }) => {
   return (
     <Grid item xs={12} sm={half ? 6 : 12}>
@@ -20,11 +21,12 @@ const Input = ({
         variant="outlined"
         required
         fullWidth
+        value={value}
         label={label}
         type={type}
-        autoFocus={autoFocus}
+        onBlur={onBlur}
         InputProps={
-          name === "password"
+          name === "password" || name === "confirmPassword"
             ? {
                 endAdornment: (
                   <InputAdornment position="end">

@@ -100,12 +100,12 @@ const Home = () => {
                 Search
               </Button>
             </AppBar>
-            <Form currentId={currentId} setCurrentId={setCurrentId}></Form>
             {!searchQuery && !tags.length && (
               <Paper className={classes.pagination} elevation={6}>
                 <Pagination page={page} />
               </Paper>
             )}
+            <Form currentId={currentId} setCurrentId={setCurrentId}></Form>
           </Grid>
         </Grid>
       </Container>
