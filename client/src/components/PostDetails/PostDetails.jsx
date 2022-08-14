@@ -12,6 +12,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
 import { getPost, getPostsBySearch } from "../../actions/posts";
 import { RESET_POST } from "../../constants/actionTypes";
+import CommentSection from "./CommentSection/CommentSection";
 import RecommendedPost from "./RecommendedPost/RecommendedPost";
 
 import useStyles from "./styles";
@@ -73,6 +74,8 @@ const PostDetails = () => {
           <Typography variant="body1">
             {moment(post.createdAt).fromNow()}
           </Typography>
+          <Divider style={{ margin: "20px 0" }} />
+          <CommentSection post={post} />
           <Divider style={{ margin: "20px 0" }} />
         </div>
         <div className={classes.imageSection}>
